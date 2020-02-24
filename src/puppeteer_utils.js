@@ -122,6 +122,11 @@ const crawl = async opt => {
     if (!shuttingDown) {
       const route = pageUrl.replace(basePath, "");
       const page = await browser.newPage();
+      await page.evaluateOnNewDocument(lang => {
+        Object.defineProperty(navigator, "siteLanguage", {
+          get: () => lang
+        });
+      }, process.env.SITE_LANG);
       if (options.viewport) await page.setViewport(options.viewport);
       if (options.skipThirdPartyRequests)
         await skipThirdPartyRequests({ page, options, basePath });
